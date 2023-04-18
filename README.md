@@ -1,13 +1,13 @@
-# Gui-element Detection
+# Brain Tumor Segmentation using 3D UNet and Variants
 
 ## Guidelines
 
 ### Code
 All code will be written in the src folder.
 
-[//]: # (## Commits)
+## Commits
 
-[//]: # (Always create a new branch to add new work, and then merge it using merge/pull request option to merge with master. This is to encounter less merge conflicts.)
+Always create a new branch to add new work, and then merge it using merge/pull request option to merge with master. This is to encounter less merge conflicts.
 
 ## Useful Links
 
