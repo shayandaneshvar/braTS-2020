@@ -19,16 +19,11 @@ All code will be written in the src folder.
 
 ## Related papers' repositories
 
-- [74 - Object Detection for Graphical User Interface: Old Fashioned or Deep Learning or a Combination?](https://github.com/chenjshnn/Object-Detection-for-Graphical-User-Interface)
-  (CenterNet, Faster-RCNN, YOLOv3, Xianyu)
-- [72 - UIED: a hybrid tool for GUI element detection](https://github.com/MulongXie/UIED)
-- [CenterNet v2](https://github.com/xingyizhou/CenterNet2)
+- 
 
 ### Important Papers
 
-- 72 - UIED: a hybrid tool for GUI element detection
-- 74 - Object detection for graphical user interface: old-fashioned or deep learning or a combination?
-- 75 - GUI Widget Detection and Intent Generation via Image Understanding
+- 3D U-Net Based Brain Tumor Segmentation and Survival Days Prediction, 2019, Wang et al.
 
 ### Datasets
 - [BraTS 2020 (Test + Validation sets)](https://www.kaggle.com/datasets/awsaf49/brats20-dataset-training-validation?resource=download)
