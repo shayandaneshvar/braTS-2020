@@ -23,7 +23,9 @@ Always create a new branch to add new work, and then merge it using merge/pull r
 
 ### Important Papers
 
-- 3D U-Net Based Brain Tumor Segmentation and Survival Days Prediction, 2019, Wang et al.
+- 3D U-Net Based Brain Tumor Segmentation and Survival Days Prediction, 2019, Wang et al. -> crap
+- [Brain Tumor Segmentation Using an Ensemble of 3D U-Nets and Overall Survival Prediction Using Radiomic Features](https://www.frontiersin.org/articles/10.3389/fncom.2020.00025/full)
+  - They ensembled 6 3DUNets with different number of layers, they split the data 6:4, hence I do the same
 
 ### Datasets
 - [BraTS 2020 (Test + Validation sets)](https://www.kaggle.com/datasets/awsaf49/brats20-dataset-training-validation?resource=download)
