@@ -44,15 +44,21 @@ Always create a new branch to add new work, and then merge it using merge/pull r
 
 
 #### Report
-- Download dataset and unzip + install nibabel
-- (FIX) Rename W39_1998.09.19_Segm -> BraTS20_Training_355_seg ()
-- TODO:
-- MinMax Scaler + Combine all volumes except for T1 native as T1 Native is the same as T1CE with worse contrast
-- label 4 -> 3
-- Crop images and remove most of the black section
-- (Extra) Drop volumes where there's not much annotation?? (To do or not to do?)
+
+Dataset stuff:
+
+- Download dataset and unzip + install nibabel (Shayan)
+- (FIX) Rename W39_1998.09.19_Segm -> BraTS20_Training_355_seg (Shayan)
+- MinMax Scaler + Combine all volumes except for T1 native as T1 Native is the same as T1CE with worse contrast (Shayan)
+- label 4 -> 3 (Shayan)
+- Crop images and remove most of the black section (Shayan)
+- (Extra) Drop volumes where there's not much annotation?? (Did not do this as there's not many images, to just lose one!)
 - 
-- 
+
+Code stuff:
+
+- wrote data loader and dataset 
+- TODO: wrote 3DUNet
 
 ## Metrics
 - 
