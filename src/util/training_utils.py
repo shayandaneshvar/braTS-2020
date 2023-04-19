@@ -30,5 +30,32 @@ def save(model, path):
 
 
 # do not give in the format - the format will be .pt
-def load(model, path):
+def load(model, path, eval=True):
     model.load_state_dict(torch.load(f"{path}.pt"))
+    if eval:
+        model.eval()
+
+
+def check_accuracy(data_loader, model, device="cuda"):
+    num_correct = 0
+    num_pixels = 0
+    dice_score = 0
+    model.eval()
+
+    with torch.no_grad():
+        for x, y in data_loader:
+            x = x.to(device)
+            y = y.to(device).unsqueeze(1)
+            preds = torch.sigmoid(model(x))
+            preds = (preds > 0.5).float()
+            num_correct += (preds == y).sum()
+            num_pixels += torch.numel(preds)
+            dice_score += (2 * (preds * y).sum()) / (
+                    (preds + y).sum() + 1e-8
+            )
+
+    print(
+        f"Results: {num_correct}/{num_pixels} with accuracy {num_correct / num_pixels * 100:.4f}"
+    )
+    print(f"Dice score: {dice_score / len(data_loader)}")
+    model.train()

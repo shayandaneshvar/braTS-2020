@@ -71,8 +71,8 @@ def get_val_ds():
     return BraTSDataset(CLEAN_VAL_IMG_PATH, CLEAN_VAL_MSK_PATH)
 
 
-def get_dl(dataset, batch_size=32):
-    return DataLoader(dataset, batch_size, shuffle=True)
+def get_dl(dataset, batch_size=32, pm=True, nw=4):
+    return DataLoader(dataset, batch_size, shuffle=True, pin_memory=pm, num_workers=nw,)
 
 
 # this is for testing only
@@ -80,5 +80,5 @@ if __name__ == '__main__':
     train_ds = BraTSDataset(CLEAN_TRAIN_IMG_PATH, CLEAN_TRAIN_MSK_PATH)
     print(train_ds[0][0].shape)
     print(train_ds[0][1].shape)
-    dl = get_dl(train_ds,batch_size=1)
+    dl = get_dl(train_ds, batch_size=1)
     print("OK")
