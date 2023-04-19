@@ -2,11 +2,31 @@ import torch
 import torch.nn as nn
 
 
+class SimpleLogger:
+
+    def __init__(self, debug=True):
+        self.debug = debug
+
+    def enable_debug(self):
+        self.debug = True
+
+    def disable_debug(self):
+        self.debug = False
+
+    def log(self, message, condition=True):
+        if self.debug and condition:
+            print(message)
+
+
+logger = SimpleLogger(debug=True)
+
+
 class DoubleConv3D(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
         # 1 + (L - l + 2P)/s
-
+        self.in_channels = in_channels
+        self.out_channels = out_channels
         self.conv = nn.Sequential(
             # 1 + out - 3 + 2 = out
             nn.Conv3d(in_channels, out_channels, 3, stride=1, padding=1, bias=False),
@@ -18,6 +38,8 @@ class DoubleConv3D(nn.Module):
         )
 
     def forward(self, inputs):
+        logger.log(self.in_channels)
+        logger.log(self.out_channels)
         return self.conv(inputs)
 
 
@@ -37,7 +59,9 @@ class Base3DUNet(nn.Module):
         input_channels = in_channels
 
         for feature in features:
+            logger.log(feature)
             self.downs.append(DoubleConv3D(input_channels, feature))
+            logger.log(f"ic:{input_channels}")
             input_channels = feature
 
         for feature in reversed(features):
@@ -47,13 +71,14 @@ class Base3DUNet(nn.Module):
         self.bottleneck = DoubleConv3D(features[-1], features[-1] * 2)  # this connects downs to ups
 
         self.output_conv = nn.Conv3d(features[0], out_channels, kernel_size=1)  # last layer - feature compression
+        logger.log("end of constructor")
 
     def forward(self, inputs):
         skips = []
 
-        x = None
+        x = inputs
         for down in self.downs:
-            x = down(inputs)
+            x = down(x)
             skips.append(x)
             x = self.pooling(x)
 
@@ -62,8 +87,19 @@ class Base3DUNet(nn.Module):
         for idx in range(0, len(self.ups), 2):  # going up 2 steps, as each step has convTranspose and DoubleConv
             x = self.ups[idx](x)  # up sampling w/ the convTranspose
             skip_connection = skips.pop()  # give me the last skip I added, to add it first on the ups
-            torch.cat((skip_connection, x), dim=1)  # dim 0 is batch, dim 1 is the channels
+            x = torch.cat((skip_connection, x), dim=1)  # dim 0 is batch, dim 1 is the channels
             x = self.ups[idx + 1](x)  # double conv
 
         return self.output_conv(x)
 
+
+def _test_3dUNet():
+    x = torch.randn((1, 4, 128, 128, 128))
+    print(x.shape)
+    model = Base3DUNet(in_channels=4)
+    out = model(x)
+    print(out.shape)
+
+
+if __name__ == '__main__':
+    _test_3dUNet()

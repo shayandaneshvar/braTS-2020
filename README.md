@@ -58,7 +58,8 @@ Dataset stuff:
 Code stuff:
 
 - wrote data loader and dataset 
-- TODO: wrote 3DUNet
+- wrote and debug 3DUNet
+- TODO: add dic or focal loss or both, and train (shayan)
 
 ## Metrics
 - Dice Coefficient

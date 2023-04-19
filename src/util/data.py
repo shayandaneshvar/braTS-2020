@@ -60,7 +60,7 @@ class BraTSDataset(Dataset):
         image = torch.from_numpy(image).float()  # .double()
         mask = torch.from_numpy(mask)  # .float() #.long()
 
-        return image.permute((3, 0, 1, 2)), mask
+        return image.permute((3, 0, 1, 2)), mask.permute((3, 0, 1, 2))
 
 
 def get_train_ds():
@@ -78,5 +78,7 @@ def get_dl(dataset, batch_size=32):
 # this is for testing only
 if __name__ == '__main__':
     train_ds = BraTSDataset(CLEAN_TRAIN_IMG_PATH, CLEAN_TRAIN_MSK_PATH)
-
+    print(train_ds[0][0].shape)
+    print(train_ds[0][1].shape)
+    dl = get_dl(train_ds,batch_size=1)
     print("OK")
