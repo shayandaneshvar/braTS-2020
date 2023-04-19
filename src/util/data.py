@@ -57,11 +57,10 @@ class BraTSDataset(Dataset):
         if self.one_hot_target:
             mask = to_categorical(mask, 4)
 
-
         image = torch.from_numpy(image).float()  # .double()
         mask = torch.from_numpy(mask)  # .float() #.long()
 
-        return image, mask
+        return image.permute((3, 0, 1, 2)), mask
 
 
 def get_train_ds():
@@ -72,8 +71,8 @@ def get_val_ds():
     return BraTSDataset(CLEAN_VAL_IMG_PATH, CLEAN_VAL_MSK_PATH)
 
 
-def get_dl(dataset, batchsize=32):
-    return DataLoader(dataset, batchsize, shuffle=True)
+def get_dl(dataset, batch_size=32):
+    return DataLoader(dataset, batch_size, shuffle=True)
 
 
 # this is for testing only

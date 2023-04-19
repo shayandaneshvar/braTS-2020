@@ -61,4 +61,13 @@ Code stuff:
 - TODO: wrote 3DUNet
 
 ## Metrics
+- Dice Coefficient
 - 
+- ...
+
+
+#### Models
+
+For segmentation, variations of 3D Unet is being used, namely 3DUNet (Concatenative skips), Residual 3DUNet (Additive skips), Attention 3DUNet
+
+<img src="img/unet.png" alt="original 2D UNet">
