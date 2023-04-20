@@ -1244,3 +1244,8 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,intellij+all,intellij+iml,intellij,pycharm,pycharm+iml,pycharm+all,java,c++,django,flask,netbeans,visualstudiocode,visualstudio
+
+
+# weights
+# do not push big 300mb> weights to git
+src/weights/
