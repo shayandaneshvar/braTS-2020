@@ -4,7 +4,10 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-from constants import CLEAN_TRAIN_IMG_PATH, CLEAN_TRAIN_MSK_PATH, CLEAN_VAL_MSK_PATH, CLEAN_VAL_IMG_PATH
+try:
+    from .constants import CLEAN_TRAIN_IMG_PATH, CLEAN_TRAIN_MSK_PATH, CLEAN_VAL_MSK_PATH, CLEAN_VAL_IMG_PATH
+except ImportError:
+    from constants import CLEAN_TRAIN_IMG_PATH, CLEAN_TRAIN_MSK_PATH, CLEAN_VAL_MSK_PATH, CLEAN_VAL_IMG_PATH
 
 
 class SimpleLogger:
@@ -53,9 +56,12 @@ class BraTSDataset(Dataset):
 
         image = np.load(self.images[idx])
         mask = np.load(self.masks[idx])
-
+        # resizing image and mask, experimental
+        image = image[::2,::2,::2]
+        mask = mask[::2,::2,::2]
         if self.one_hot_target:
             mask = to_categorical(mask, 4)
+            mask = mask[::, ::, ::, 1::]  # discard background
 
         image = torch.from_numpy(image).float()  # .double()
         mask = torch.from_numpy(mask)  # .float() #.long()
@@ -72,7 +78,7 @@ def get_val_ds():
 
 
 def get_dl(dataset, batch_size=32, pm=True, nw=4):
-    return DataLoader(dataset, batch_size, shuffle=True, pin_memory=pm, num_workers=nw,)
+    return DataLoader(dataset, batch_size, shuffle=True, pin_memory=pm, num_workers=nw, )
 
 
 # this is for testing only
