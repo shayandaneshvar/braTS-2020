@@ -1,13 +1,14 @@
 import torch
 import torch.nn as nn
 
+
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class ResidualBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
         super().__init__()
-
+        # the output image will be (n + 2p — f + 1) * (n + 2p — f + 1) where p =1 in this case.
         # Convolutional Layer
         self.conv = nn.Sequential(
           nn.BatchNorm3d(in_channels),
@@ -51,7 +52,9 @@ class Res3DUNet(nn.Module):
         self.bn1   = nn.BatchNorm3d(64)
         self.relu  = nn.ReLU(inplace=True)
         self.conv2 = nn.Conv3d(64, 64, kernel_size=3, padding=1)
+        #Identity Mapping
         self.conv3 = nn.Conv3d(in_channels, 64, kernel_size=1, padding=0)
+        
         # Encoder 2 
         self.r2 = ResidualBlock(64, 128, stride=2)
         # Encoder 2 
@@ -103,3 +106,4 @@ def _test_Res3dUNet():
 
 if __name__ == '__main__':
     _test_Res3dUNet()
+
