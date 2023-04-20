@@ -89,7 +89,7 @@ class Base3DUNet(nn.Module):
 def _test_3dUNet():
     x = torch.randn((1, 3, 128, 128, 128))
     print(x.shape)
-    model = Base3DUNet(in_channels=3)
+    model = Base3DUNet(in_channels=3,out_channels=3)
     out = model(x)
     print(out.shape)
 
