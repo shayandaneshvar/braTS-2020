@@ -40,6 +40,6 @@ class BCEDiceLoss(nn.Module):
                 targets: torch.Tensor) -> torch.Tensor:
         assert (logits.shape == targets.shape)
         dice_loss = self.dice(logits, targets)
-        bce_loss = self.bce(logits, targets)
+        bce_loss = self.bce(logits, targets.float())
 
         return bce_loss + dice_loss
