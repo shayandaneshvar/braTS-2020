@@ -38,7 +38,7 @@ class Attention3UNet(Base3DUNet):  # Generalization of 2D attention UNet
         self.attention = nn.ModuleList()
 
         for feature in reversed(features):
-            self.attention.append(AttentionBlock(feature, feature, feature // 2))
+            self.attention.append(AttentionBlock(feature * 2, feature, feature))
 
     def forward(self, inputs):
         skips = []
@@ -70,7 +70,7 @@ class Attention3UNet(Base3DUNet):  # Generalization of 2D attention UNet
 def _test_Att3dUNet():
     x = torch.randn((1, 3, 128, 128, 128))
     print(x.shape)
-    model = Base3DUNet(in_channels=3, out_channels=3,up_sample=True)
+    model = Attention3UNet(in_channels=3, out_channels=3, up_sample=True)
     out = model(x)
     print(out.shape)
 
