@@ -27,6 +27,14 @@ Always create a new branch to add new work, and then merge it using merge/pull r
 - [Brain Tumor Segmentation Using an Ensemble of 3D U-Nets and Overall Survival Prediction Using Radiomic Features](https://www.frontiersin.org/articles/10.3389/fncom.2020.00025/full)
   - They ensembled 6 3DUNets with different number of layers, they split the data 6:4, hence I do the same splits
 
+#### Related Papers
+Residual UNet paper
+https://arxiv.org/pdf/1909.12901v2.pdf
+https://www.frontiersin.org/articles/10.3389/fncom.2020.00025/full
+Attention U-Net: Learning Where to Look for the Pancreas (2D Unet with sophisticated attention)
+Brain Tumor Segmentation and Survival Prediction using 3D Attention UNet (Trivial Channel Attention on 3D UNet)
+
+
 ### Datasets
 - [BraTS 2020 (Test + Validation sets)](https://www.kaggle.com/datasets/awsaf49/brats20-dataset-training-validation?resource=download)
   - Multi-modal scans available as NIfTI images .nii

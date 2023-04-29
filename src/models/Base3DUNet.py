@@ -42,7 +42,7 @@ class DoubleConv3D(nn.Module):
 class Base3DUNet(nn.Module):
     # the default dataset has 3 channels of data ->  T1CE, T2, FLAIR
     # The output has background, NCR/NET, ED, ET
-    def __init__(self, in_channels=3, out_channels=4, features=[64, 128, 256, 512]):
+    def __init__(self, in_channels=3, out_channels=4, features=[64, 128, 256, 512], up_sample=False):
         super().__init__()
         # 1 + (L - l + 2P)/s
         # 1 + (L - 2)/2 = L
@@ -59,8 +59,13 @@ class Base3DUNet(nn.Module):
             input_channels = feature
 
         for feature in reversed(features):
-            self.ups.append(nn.ConvTranspose3d(feature * 2, feature, kernel_size=2, stride=2))
-            self.ups.append(DoubleConv3D(feature * 2, feature))
+            if up_sample:
+                self.ups.append(nn.Upsample(scale_factor=2, mode="trilinear", align_corners=True))
+                self.ups.append(DoubleConv3D(feature * 3, feature))
+                # *3 because upsample does not change the number of channels
+            else:
+                self.ups.append(nn.ConvTranspose3d(feature * 2, feature, kernel_size=2, stride=2))
+                self.ups.append(DoubleConv3D(feature * 2, feature))
 
         self.bottleneck = DoubleConv3D(features[-1], features[-1] * 2)  # this connects downs to ups
 
@@ -89,7 +94,8 @@ class Base3DUNet(nn.Module):
 def _test_3dUNet():
     x = torch.randn((1, 3, 128, 128, 128))
     print(x.shape)
-    model = Base3DUNet(in_channels=3,out_channels=3)
+    model = Base3DUNet(in_channels=3,out_channels=3,up_sample=True)
+    # model = Base3DUNet(in_channels=3,out_channels=3,up_sample=False)
     out = model(x)
     print(out.shape)
 
