@@ -38,7 +38,11 @@ class Attention3UNet(Base3DUNet):  # Generalization of 2D attention UNet
         self.attention = nn.ModuleList()
 
         for feature in reversed(features):
-            self.attention.append(AttentionBlock(feature * 2, feature, feature))
+            if up_sample:
+                self.attention.append(AttentionBlock(feature * 2, feature, feature))
+            else:
+                self.attention.append(AttentionBlock(feature, feature, feature))
+                # when convT is used, then the G is normal and the same as skip
 
     def forward(self, inputs):
         skips = []
