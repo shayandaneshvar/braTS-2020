@@ -38,12 +38,13 @@ class BraTSDataset(Dataset):
     def log(self, message):
         logger.log(message, condition=self.debug)
 
-    def __init__(self, images_path, masks_path, transform=None, one_hot_target=True, debug=True):
+    def __init__(self, images_path, masks_path, transform=None, one_hot_target=True, debug=True, original_mask=False):
         self.images = sorted(glob(f"{images_path}/*.npy"))
         self.masks = sorted(glob(f"{masks_path}/*.npy"))
         self.transform = transform
         self.one_hot_target = one_hot_target
         self.debug = debug
+        self.original_masks = original_mask
         self.log(f"images: {len(self.images)}, masks: {len(self.masks)} ")
         assert len(self.images) == len(self.masks), "images and masks lengths are not the same!"
 
@@ -57,8 +58,9 @@ class BraTSDataset(Dataset):
         image = np.load(self.images[idx])
         mask = np.load(self.masks[idx])
         # resizing image and mask, experimental
-        image = image[::2,::2,::2]
-        mask = mask[::2,::2,::2]
+        image = image[::2, ::2, ::2]
+        if not self.original_masks:
+            mask = mask[::2, ::2, ::2]
         if self.one_hot_target:
             mask = to_categorical(mask, 4)
             mask = mask[::, ::, ::, 1::]  # discard background
@@ -73,8 +75,8 @@ def get_train_ds():
     return BraTSDataset(CLEAN_TRAIN_IMG_PATH, CLEAN_TRAIN_MSK_PATH)
 
 
-def get_val_ds():
-    return BraTSDataset(CLEAN_VAL_IMG_PATH, CLEAN_VAL_MSK_PATH)
+def get_val_ds(full_masks=False):
+    return BraTSDataset(CLEAN_VAL_IMG_PATH, CLEAN_VAL_MSK_PATH, original_mask=full_masks)
 
 
 def get_dl(dataset, batch_size=32, pm=True, nw=4):
