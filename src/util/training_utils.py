@@ -86,22 +86,22 @@ def check_accuracy_v2(data_loader, model, device="cuda"):
             ET_pred = preds[:, 2]
             ET_real = y[:, 2]
             WT_pred = (preds[:, 0] + preds[:, 1] + preds[:, 2] >= 1).float()
-            WT_real = (y[:, 0] + y[:, 2] + y[:, 2] >= 1).float()
+            WT_real = (y[:, 0] + y[:, 1] + y[:, 2] >= 1).float()
 
             num_correct['TC'] += (TC_pred == TC_real).sum()
             num_pixels['TC'] += torch.numel(TC_pred)
             dice_score['TC'] += (2 * (TC_pred * TC_real).sum()) / (
-                    (TC_pred * TC_real).sum() + 1e-8)
+                    (TC_pred + TC_real).sum() + 1e-8)
 
             num_correct['ET'] += (ET_pred == ET_real).sum()
             num_pixels['ET'] += torch.numel(ET_pred)
             dice_score['ET'] += (2 * (ET_pred * ET_real).sum()) / (
-                    (ET_pred * ET_real).sum() + 1e-8)
+                    (ET_pred + ET_real).sum() + 1e-8)
 
             num_correct['WT'] += (WT_pred == WT_real).sum()
             num_pixels['WT'] += torch.numel(WT_pred)
             dice_score['WT'] += (2 * (WT_pred * WT_real).sum()) / (
-                    (WT_pred * WT_real).sum() + 1e-8)
+                    (WT_pred + WT_real).sum() + 1e-8)
 
     # print(
     #     f"Results (TC,ET,WT): ({num_correct['TC']}/{num_pixels['TC']}) with accuracy {num_correct / num_pixels * 100:.4f}"
