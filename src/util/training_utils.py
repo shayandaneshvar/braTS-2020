@@ -103,8 +103,10 @@ def check_accuracy_v2(data_loader, model, device="cuda"):
             dice_score['WT'] += (2 * (WT_pred * WT_real).sum()) / (
                     (WT_pred * WT_real).sum() + 1e-8)
 
-    print(
-        f"Results (TC,ET,WT): ({num_correct['TC']}/{num_pixels['TC']}) with accuracy {num_correct / num_pixels * 100:.4f}"
-    )
-    print(f"Dice score: {dice_score / len(data_loader)}")
+    # print(
+    #     f"Results (TC,ET,WT): ({num_correct['TC']}/{num_pixels['TC']}) with accuracy {num_correct / num_pixels * 100:.4f}"
+    # )
+
+    print(f" Accuracy (TC,ET,WT): \n --> {num_correct['TC'] / num_pixels['TC'] * 100:.4f} , {num_correct['ET'] / num_pixels['ET'] * 100:.4f}, {num_correct['WT'] / num_pixels['WT'] * 100:.4f}")
+    print(f"Dice Score (TC,ET,WT): \n {dice_score['TC'] / len(data_loader)} , {dice_score['ET'] / len(data_loader)}, {dice_score['WT'] / len(data_loader)}")
     model.train()
