@@ -304,7 +304,7 @@ def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
     dice_score = {'TC': 0, 'ET': 0, 'WT': 0}
     iou_score = {'TC': 0, 'ET': 0, 'WT': 0}
 
-    EPS = 1e-16
+    EPS = 1e-9
     model.eval()
 
     with torch.no_grad():
