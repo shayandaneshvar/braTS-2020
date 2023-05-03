@@ -1,3 +1,5 @@
+# Residual 3DUNet model
+
 import torch
 import torch.nn as nn
 
@@ -57,16 +59,20 @@ class Res3DUNet(nn.Module):
         
         # Encoder 2 
         self.r2 = ResidualBlock(64, 128, stride=2)
-        # Encoder 2 
+        # Encoder 3 
         self.r3 = ResidualBlock(128, 256, stride=2)
-        # Bridge
+        # Encoder 4 
         self.r4 = ResidualBlock(256, 512, stride=2)
+        # Bridge
+        self.r5 = ResidualBlock(512, 1024, stride=2)
         # Decoder 1
-        self.d1 = DecoderBlock(512, 256)
+        self.d1 = DecoderBlock(1024, 512)
         # Decoder 2
-        self.d2 = DecoderBlock(256, 128)
+        self.d2 = DecoderBlock(512, 256)
         # Decoder 3
-        self.d3 = DecoderBlock(128, 64)
+        self.d3 = DecoderBlock(256, 128)
+        # Decoder 4
+        self.d4 = DecoderBlock(128, 64)
 
         # Output 
         self.output = nn.Conv3d(64, out_channels, kernel_size=1, padding=0)
@@ -84,26 +90,19 @@ class Res3DUNet(nn.Module):
         skip2 = self.r2(skip1)
         # Encoder 3 
         skip3 = self.r3(skip2)
+        # Encoder 4 
+        skip4 = self.r4(skip3)
         # Bridge 
-        b = self.r4(skip3)
+        b = self.r5(skip4)
         # Decoder 1
-        d1 = self.d1(b, skip3)
-        # Decoder 1
-        d2 = self.d2(d1, skip2)
-        # Decoder 1
-        d3 = self.d3(d2, skip1)
+        d1 = self.d1(b, skip4)
+        # Decoder 2
+        d2 = self.d2(d1, skip3)
+        # Decoder 3
+        d3 = self.d3(d2, skip2)
+        # Decoder 4
+        d4 = self.d4(d3, skip1)
         # output 
-        output = self.output(d3)
+        output = self.output(d4)
 
         return output
-
-def _test_Res3dUNet():
-    x = torch.randn((1, 3, 128, 128, 128)).to(device)
-    print(x.shape)
-    model = Res3DUNet(in_channels=3).to(device)
-    out = model(x)
-    print(out.shape)
-
-if __name__ == '__main__':
-    _test_Res3dUNet()
-
