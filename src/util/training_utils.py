@@ -295,6 +295,7 @@ def get_all_metrics(data_loader, model, device="cuda"):  # requires full masks
 
     return None
 
+
 # This one gives true average on all, and is final
 def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
     num_correct = {'TC': 0, 'ET': 0, 'WT': 0}
@@ -303,6 +304,8 @@ def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
     num_pixels = {'TC': 0, 'ET': 0, 'WT': 0}
     dice_score = {'TC': 0, 'ET': 0, 'WT': 0}
     iou_score = {'TC': 0, 'ET': 0, 'WT': 0}
+
+    results = {'TC': {'real': [], 'pred': []}, 'ET': {'real': [], 'pred': []}, 'WT': {'real': [], 'pred': []}}
 
     EPS = 1e-9
     model.eval()
@@ -318,14 +321,32 @@ def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
 
             preds = simple_trilinear_interpolation(original_preds)  # here or next?
 
-            preds = (preds >= 0.5).float()
+            # preds = (preds >= 0.5).float() # can't do it here, need the probabilities for auc_roc
             for i in range(preds.shape[0]):
-                TC_pred = (preds[i, 0] + preds[i, 2] > 0.9).float()
+                # TC_pred = (preds[i, 0] + preds[i, 2] > 0.9).float()
+                # ET_pred = preds[i, 2]
+                # WT_pred = (preds[i, 0] + preds[i, 1] + preds[i, 2] > 0.9).float()
+
                 TC_real = (y[i, 0] + y[i, 2] > 0.9).float()
-                ET_pred = preds[i, 2]
                 ET_real = y[i, 2]
-                WT_pred = (preds[i, 0] + preds[i, 1] + preds[i, 2] > 0.9).float()
                 WT_real = (y[i, 0] + y[i, 1] + y[i, 2] > 0.9).float()
+
+                TC_pred = (preds[i, 0] + preds[i, 2]).float()
+                ET_pred = preds[i, 2]
+                WT_pred = (preds[i, 0] + preds[i, 1] + preds[i, 2]).float()
+
+                # for auc_roc we need non-thresholded probabilities
+                results['TC']['pred'].append(TC_pred.flatten().cpu().numpy())
+                results['TC']['real'].append(TC_real.flatten().cpu().numpy())
+                results['ET']['pred'].append(ET_pred.flatten().cpu().numpy())
+                results['ET']['real'].append(ET_real.flatten().cpu().numpy())
+                results['WT']['pred'].append(WT_pred.flatten().cpu().numpy())
+                results['WT']['real'].append(WT_real.flatten().cpu().numpy())
+
+                # Thresholding again
+                TC_pred = (TC_pred >= 0.5).float()
+                ET_pred = (ET_pred >= 0.5).float()
+                WT_pred = (WT_pred >= 0.5).float()
 
                 num_correct['TC'] += (TC_pred == TC_real).sum()
                 num_pixels['TC'] += torch.numel(TC_pred)
@@ -333,7 +354,7 @@ def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
                 num_true_labels['TC'] += (TC_real > .9).sum()
                 dice_score['TC'] += (2 * (TC_pred * TC_real).sum()) / ((TC_pred + TC_real).sum() + EPS)
                 iou_score['TC'] += (TC_pred * TC_real).sum() / (
-                            (TC_pred + TC_real).sum() - (TC_pred * TC_real).sum() + EPS)
+                        (TC_pred + TC_real).sum() - (TC_pred * TC_real).sum() + EPS)
 
                 num_correct['ET'] += (ET_pred == ET_real).sum()
                 num_pixels['ET'] += torch.numel(ET_pred)
@@ -341,7 +362,7 @@ def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
                 num_true_labels['ET'] += (ET_real > .9).sum()
                 dice_score['ET'] += (2 * (ET_pred * ET_real).sum()) / ((ET_pred + ET_real).sum() + EPS)
                 iou_score['ET'] += (ET_pred * ET_real).sum() / (
-                            (ET_pred + ET_real).sum() - (ET_pred * ET_real).sum() + EPS)
+                        (ET_pred + ET_real).sum() - (ET_pred * ET_real).sum() + EPS)
 
                 num_correct['WT'] += (WT_pred == WT_real).sum()
                 num_pixels['WT'] += torch.numel(WT_pred)
@@ -349,7 +370,7 @@ def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
                 num_true_labels['WT'] += (WT_real > .9).sum()
                 dice_score['WT'] += (2 * (WT_pred * WT_real).sum()) / ((WT_pred + WT_real).sum() + EPS)
                 iou_score['WT'] += (WT_pred * WT_real).sum() / (
-                            (WT_pred + WT_real).sum() - (WT_pred * WT_real).sum() + EPS)
+                        (WT_pred + WT_real).sum() - (WT_pred * WT_real).sum() + EPS)
 
     # precision: correct true predicts / all true predicts -> TP / (TP + FP)
 
@@ -385,7 +406,7 @@ def get_all_metrics_2(data_loader, model, device="cuda"):  # requires full masks
 
     model.train()
 
-    return None
+    return results
 
 
 def simple_trilinear_interpolation(inputs):
