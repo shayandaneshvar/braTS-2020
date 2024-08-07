@@ -1,31 +1,12 @@
 # Brain Tumor Segmentation using 3D UNet and Variants
+[Full Report](https://github.com/shayandaneshvar/braTS-2020/blob/master/Deep%20Learning%20Final%20Project%20Report.pdf)
 
 ## Guidelines
-
-### Code
-All code will be written in the src folder.
-
-## Commits
-
-Always create a new branch to add new work, and then merge it using merge/pull request option to merge with master. This is to encounter less merge conflicts.
-
-## Useful Links
-
-- [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
-- [ImageDataGenerator tutorial](https://vijayabhaskar96.medium.com/tutorial-image-classification-with-keras-flow-from-directory-and-generators-95f75ebe5720)
-- [ImageDataGenerator tutorial - TF website](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator#flow)
-- [ImageDataGenerator tutorial flow function - SO](https://stackoverflow.com/questions/57185851/correct-usage-of-imagedatagenerator-flow-function)
-
-
-## Related papers' repositories
-
-- 
-
 ### Important Papers
 
 - 3D U-Net Based Brain Tumor Segmentation and Survival Days Prediction, 2019, Wang et al. -> crap
 - [Brain Tumor Segmentation Using an Ensemble of 3D U-Nets and Overall Survival Prediction Using Radiomic Features](https://www.frontiersin.org/articles/10.3389/fncom.2020.00025/full)
-  - They ensembled 6 3DUNets with different number of layers, they split the data 6:4, hence I do the same splits
+  - They ensembled 6 3DUNets with different numbers of layers, and they split the data 6:4, hence I do the same splits
 
 #### Related Papers
 Residual UNet paper
@@ -62,17 +43,10 @@ Dataset stuff:
 - Crop images and remove most of the black section (Shayan)
 - (Extra) Drop volumes where there's not much annotation?? (Did not do this as there's not many images, to just lose one!)
 - 
-
-Code stuff:
-
-- wrote data loader and dataset 
-- wrote and debug 3DUNet
-- TODO: add dice or focal loss or both, and train (shayan)
-- Going with BCEwithLogit to see how it works
-
 ## Metrics
 - Dice Coefficient
 - Accuracy
+- AUC-ROC
 - ...
 
 
